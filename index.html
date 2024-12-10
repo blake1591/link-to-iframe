@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link to Iframe</title>
+  <link href='/style.css' rel='stylesheet'>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    body.dark-mode {
+      background-color: #333;
+      color: #f4f4f4;
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode button {
+      background-color: #555;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without some blocking. Some websites do not allow their site into an iframe (which is the box where the website is in) and you will need to enter the https:// .</p>  
+
+  <input type="text" id="linkInput" placeholder="Enter a link">  
+  <button id="loadButton">Load Link</button>
+  <button id="reloadButton">&#x21bb;</button> 
+  <select id="linkDropdown"> 
+    <option value="">-- Select a site --</option>
+    <option value="https://games-site.github.io/">Games</option>
+  </select>
+  <button id="darkModeToggle" style="position: fixed; top: 10px; right: 10px;">
+    <span id="darkModeIcon">🌙</span>
+  </button>
+
+  <iframe id="myIframe" style="width: 100%; height: calc(100vh - 100px);" frameborder="0"
+    allowfullscreen></iframe>
+
+  
+  <script>
+    function loadIframe(link) {
+      const iframe = document.getElementById("myIframe");
+      if (link) {
+        iframe.src = link;
+      }
+    }    
+
+    document.getElementById('loadButton').addEventListener('click', function() {
+      loadIframe(document.getElementById('linkInput').value);
+    });
+    
+    document.getElementById('linkDropdown').addEventListener('change', function() {
+      loadIframe(this.value);
+    });
+
+    document.getElementById('darkModeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+
+      const darkModeIcon = document.getElementById('darkModeIcon');
+      if (document.body.classList.contains('dark-mode')) {
+        darkModeIcon.textContent = '☀️';
+      } else {
+        darkModeIcon.textContent = '🌙';
+      }
+      
+    });
+
+    document.getElementById('reloadButton').addEventListener('click', function() {
+      document.getElementById('myIframe').src = document.getElementById('myIframe').src;
+    });
+
+  </script>
+</body>
+</html>
