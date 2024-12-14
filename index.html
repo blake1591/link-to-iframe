@@ -59,14 +59,22 @@
       loadIframe(this.value);
     });
 
+    // Check for saved theme preference on load
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('darkModeIcon').textContent = '☀️';
+    }
+
     document.getElementById('darkModeToggle').addEventListener('click', function() {
       document.body.classList.toggle('dark-mode');
 
       const darkModeIcon = document.getElementById('darkModeIcon');
       if (document.body.classList.contains('dark-mode')) {
         darkModeIcon.textContent = '☀️';
+        localStorage.setItem('darkMode', 'enabled');
       } else {
         darkModeIcon.textContent = '🌙';
+        localStorage.setItem('darkMode', 'disabled');
       }
       
       // You can add logic here to store the user's preference
@@ -81,4 +89,3 @@
   </script>
 </body>
 </html>
-
