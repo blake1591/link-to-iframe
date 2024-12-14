@@ -16,6 +16,7 @@
       color: #f4f4f4;
     }
 
+    /* Add more styles for dark mode elements if needed */
     body.dark-mode input,
     body.dark-mode select,
     body.dark-mode button {
@@ -25,14 +26,14 @@
   </style>
 </head>
 <body>
-  <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without some blocking. Some websites do not allow their site into an iframe (which is the box where the website is in) and you will need to enter the https:// .</p>  
+  <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without any blocking. Some websites do not allow their site into an iframe (which is the box where the website is in) and you will need to enter the https://.</p>  
 
   <input type="text" id="linkInput" placeholder="Enter a link">  
   <button id="loadButton">Load Link</button>
   <button id="reloadButton">&#x21bb;</button> 
   <select id="linkDropdown"> 
     <option value="">-- Select a site --</option>
-    <option value="https://games-site.github.io/">Games</option>
+    <option value="https://spew45.github.io/">Games</option>
   </select>
   <button id="darkModeToggle" style="position: fixed; top: 10px; right: 10px;">
     <span id="darkModeIcon">🌙</span>
@@ -68,6 +69,9 @@
         darkModeIcon.textContent = '🌙';
       }
       
+      // You can add logic here to store the user's preference
+      // using localStorage if you want the theme to persist
+      // across page reloads.
     });
 
     document.getElementById('reloadButton').addEventListener('click', function() {
@@ -77,3 +81,4 @@
   </script>
 </body>
 </html>
+
