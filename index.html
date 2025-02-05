@@ -33,7 +33,7 @@
   <button id="reloadButton">&#x21bb;</button> 
   <select id="linkDropdown"> 
     <option value="">-- Select a site --</option>
-    <option value="https://spew45.github.io/">Games</option>
+    <option value="https://sz-games.github.io/">Games</option>
   </select>
   <button id="darkModeToggle" style="position: fixed; top: 10px; right: 10px;">
     <span id="darkModeIcon">🌙</span>
@@ -42,7 +42,6 @@
   <iframe id="myIframe" style="width: 100%; height: calc(100vh - 100px);" frameborder="0"
     allowfullscreen></iframe>
 
-  
   <script>
     function loadIframe(link) {
       const iframe = document.getElementById("myIframe");
@@ -50,6 +49,28 @@
         iframe.src = link;
       }
     }    
+
+    // Function to get the URL from the current page's URL
+    function getUrlFromLocation() {
+      const currentUrl = window.location.href;
+      const parts = currentUrl.split('/');
+      
+      //Check to make sure there is a url to go to
+      if(parts.length > 3){
+        return parts.slice(3).join('/');
+      } else {
+        return "";
+      }
+    }
+
+    // Add event listener to handle 'Enter' key press in the input field
+    document.getElementById('linkInput').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default action (form submission)
+        document.getElementById('loadButton').click(); // Simulate a click on the load button
+      }
+    });
+
 
     document.getElementById('loadButton').addEventListener('click', function() {
       loadIframe(document.getElementById('linkInput').value);
@@ -86,6 +107,12 @@
       document.getElementById('myIframe').src = document.getElementById('myIframe').src;
     });
 
-  </script>
+    // Load URL from location on page load if available
+    const initialUrl = getUrlFromLocation();
+    if (initialUrl) {
+      loadIframe(initialUrl);
+    }
+
+  </script>  
 </body>
 </html>
