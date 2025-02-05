@@ -1,5 +1,5 @@
 # link-to-iframe
-A simple HTML page where you can input a link and it will fill an iframe. Other features include light and dark mode, a refresh button, and a drop-down menu of recommended sites.
+A simple HTML page where you can input a link and it will fill an iframe. Other features include light and dark modes, navigation buttons, autocomplete links (beta), and a drop-down menu of recommended sites.
 # Live version
 You can view a live version of this code at https://linktoiframe.netlify.app/ .
 # Other features
