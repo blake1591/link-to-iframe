@@ -3,13 +3,12 @@ A simple HTML page where you can input a link and it will fill an iframe. Other 
 # Live version
 You can view a live version of this code at https://linktoiframe.netlify.app/ .
 # Other features
-![Screenshot 2024-12-10 6 19 45 PM](https://github.com/user-attachments/assets/0f407406-60cc-4494-8e99-8cd0e54e89d5)
+![Screenshot 2025-02-05 11 21 32 AM](https://github.com/user-attachments/assets/711b87ba-0153-4a77-89e3-9f8458a8c8ea)
 ## Light and dark mode
 Light
-![Screenshot 2024-12-10 4 47 37 PM](https://github.com/user-attachments/assets/527d1a18-cfeb-4ce5-bc11-c1fc725c8754)
-
+![Screenshot 2025-02-05 11 24 01 AM](https://github.com/user-attachments/assets/761d6413-5e58-4c7c-9a26-c1f13a24e06d)
 Dark
-![Screenshot 2024-12-10 4 47 31 PM](https://github.com/user-attachments/assets/c1d85f9e-cfa9-4e28-bc22-8505118dfe32)
+![Screenshot 2025-02-05 11 26 22 AM](https://github.com/user-attachments/assets/9e0d345f-452f-4f37-8056-cb64c8c61010)
 # Instructions
 1. Get a URL (don't forget to add the protocol and the subdomain if applicable).
 2. Enter the entire URL with protocol and subdomain.
