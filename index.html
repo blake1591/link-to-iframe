@@ -1,130 +1,201 @@
-
 <!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Link to Iframe</title>
-  <link href='/style.css' rel='stylesheet'>
-  <style>
-    body {
-      background-color: #f4f4f4;
-      color: #333;
-    }
-
-    body.dark-mode {
-      background-color: #333;
-      color: #f4f4f4;
-    }
-
-    /* Add more styles for dark mode elements if needed */
-    body.dark-mode input,
-    body.dark-mode select,
-    body.dark-mode button {
-      background-color: #555;
-      color: #fff;
-    }
-  </style>
-</head>
-
-<body>
-  <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without any blocking.
- Some
-    websites do not allow their site into an iframe (which is the box where the website is in) and you will need to
-    enter the https://.</p>
-
-  <input type="text" id="linkInput" placeholder="Enter a link">
-  <button id="loadButton">Load Link</button>
-  <button id="reloadButton">&#x21bb;</button>
-  <select id="linkDropdown">
-    <option value="">-- Select a site --</option>
-    <option value="https://sz-games.github.io/">Games</option>
-  </select>
-  <button id="darkModeToggle" style="position: fixed; top: 10px; right: 10px;">
-    <span id="darkModeIcon">🌙</span>
-  </button>
-
-  <iframe id="myIframe" style="width: 100%; height: calc(100vh - 100px);" frameborder="0"
-    allowfullscreen></iframe>
-
-  <script>
-    function loadIframe(link) {
-      const iframe = document.getElementById("myIframe");
-      if (link) {
-        iframe.src = link;
-      }
-    }
-
-    // Function to get the URL from the current page's URL
-    function getUrlFromLocation() {
-      const currentUrl = window.location.href;
-      const urlStartIndex = currentUrl.indexOf('/', currentUrl.indexOf('//') + 2); // Find the first / after the protocol
-
-      if (urlStartIndex !== -1) {
-        const potentialUrl = currentUrl.substring(urlStartIndex + 1);
-        if (potentialUrl.startsWith('http')) {
-          return potentialUrl;
-        } else {
-          return "";
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link to Iframe</title>
+    <meta name="description" content="A simple HTML page where you can input a link and it will fill an iframe. Other features include light and dark modes, navigation buttons, autocomplete links (beta), and a drop-down menu of recommended sites.">
+    <link href='/style.css' rel='stylesheet'>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            color: #333;
         }
-      } else {
-        return "";
-      }
-    }
 
-    // Add event listener to handle 'Enter' key press in the input field
-    document.getElementById('linkInput').addEventListener('keypress', function (event) {
-      if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent the default action (form submission)
-        document.getElementById('loadButton').click(); // Simulate a click on the load button
-      }
-    });
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+
+        /* Add more styles for dark mode elements if needed */
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode button {
+            background-color: #555;
+            color: #fff;
+        }
+
+        body.dark-mode .suggestion-item {
+            color: white;
+            background-color: #444;
+            /* Slightly darker than #333 */
+
+        }
+    </style>
+    <style>
+        #backButton,
+        #forwardButton {
+            font-size: 16px;
+        }
+
+        #reloadButton {
+            font-size: 17px
+        }
+    </style>
 
 
-    document.getElementById('loadButton').addEventListener('click', function
- () {
-      loadIframe(document.getElementById('linkInput').value);
-    });
+<body title="main page">
+    <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without any blocking.
+        Some
 
-    document.getElementById('linkDropdown').addEventListener('change', function () {
-      loadIframe(this.value);
-    });
+        websites do not allow their site into an iframe (which is the box where the website is in) and you will need to
+        enter the https://.</p>
 
-    // Check for saved theme preference on load
-    if (localStorage.getItem('darkMode') === 'enabled') {
-      document.body.classList.add('dark-mode');
-      document.getElementById('darkModeIcon').textContent = '☀️';
-    }
+    <input type="text" id="linkInput" placeholder="Enter a link">
+    <button id="loadButton">Load Link</button> <button id="backButton">←</button>
+    <button id="forwardButton">→</button>
+    <div id="suggestionBox"
+        style="display: none; position: absolute; border: 1px solid #ccc; background-color: white; max-height: 150px; overflow-y: auto;">
+        <!-- Suggestions will be added here -->
+    </div>
+    <style>
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <button id="reloadButton">⟳</button>
+    
+    <select id="linkDropdown">
+        <option value="">-- Select a site --</option>
+        <option value="https://sz-games.github.io/">Games</option>
+        
+    </select>
+    <button id="darkModeToggle" style="position: fixed; top: 10px; right: 10px;">
+        <span id="darkModeIcon">🌙</span>
+    </button>
 
-    document.getElementById('darkModeToggle').addEventListener('click', function () {
-      document.body.classList.toggle('dark-mode');
+    <iframe id="myIframe" title="website" style="width: 100%; height: calc(100vh - 100px);" frameborder="0" allowfullscreen></iframe>
+    <script >
+        const suggestionBox = document.getElementById('suggestionBox');
 
-      const darkModeIcon = document.getElementById('darkModeIcon');
-      if (document.body.classList.contains('dark-mode')) {
-        darkModeIcon.textContent = '☀️';
-        localStorage.setItem('darkMode', 'enabled');
-      } else {
-        darkModeIcon.textContent = '🌙';
-        localStorage.setItem('darkMode', 'disabled');
-      }
+        function showSuggestions(suggestions) {
+            suggestionBox.innerHTML = '';
+            if (suggestions.length > 0) {
+                suggestions.forEach(suggestion => {
+                    const item = document.createElement('div');
+                    item.classList.add('suggestion-item');
+                    item.textContent = suggestion;
+                    item.addEventListener('click', () => {
+                        linkInput.value = suggestion;
+                        suggestionBox.style.display = 'none';
+                    });
+                    suggestionBox.appendChild(item);
+                });
+                suggestionBox.style.display = 'block';
+            } else {
+                suggestionBox.style.display = 'none';
+            }
+        }
 
-      // You can add logic here to store the user's preference
-      // using localStorage if you want the theme to persist
-      // across page reloads.
-    });
+        // Function to filter suggestions based on the input value
+        function filterSuggestions(value) {
+            const allOptions = Array.from(document.getElementById('linkDropdown').options).map(option => option.value);
 
-    document.getElementById('reloadButton').addEventListener('click', function () {
-      document.getElementById('myIframe').src = document.getElementById('myIframe').src;
-    });
+            if (value.trim() === '') {
+                return [];
+            } else {
+                return allOptions.filter(option => option.toLowerCase().includes(value.toLowerCase()));
+            }
 
-    // Load URL from location on page load if available
-    const initialUrl = getUrlFromLocation();
-    if (initialUrl) {
-      loadIframe(initialUrl);
-    }
+        }
 
-  </script>
-</body>
+        // Function to position the suggestion box below the input
+        function positionSuggestionBox() {
+            const inputRect = linkInput.getBoundingClientRect();
+            suggestionBox.style.left = `${inputRect.left}px`;
+            suggestionBox.style.top = `${inputRect.bottom}px`;
+            suggestionBox.style.width = `${inputRect.width}px`;
+        }
 
+        // Event listener for input changes
+        linkInput.addEventListener('input', () => {
+            const suggestions = filterSuggestions(linkInput.value);
+            showSuggestions(suggestions);
+            positionSuggestionBox();
+        });
+
+        // Event listener to hide the suggestion box when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!suggestionBox.contains(event.target) && event.target !== linkInput) {
+                suggestionBox.style.display = 'none';
+            }
+        });
+
+
+        // Handle selecting suggestions with arrow keys
+        linkInput.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                // Add logic to navigate through the suggestion list
+                event.preventDefault(); // Prevent default scrolling
+            } else if (event.key === 'Enter' && suggestionBox.style.display === 'block') {
+                event.preventDefault(); // Prevent default form submission
+            }
+        });
+        const linkInput = document.getElementById('linkInput');
+        // Add event listener to handle 'Enter' key press in the input field
+        linkInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default action (form submission)
+
+
+        document.getElementById('loadButton').addEventListener('click', function () {
+            loadIframe(document.getElementById('linkInput').value);
+        });
+        document.getElementById('linkDropdown').addEventListener('change', function () {
+            loadIframe(this.value);
+        });
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeIcon').textContent = '☀️';
+        }
+
+        document.getElementById('darkModeToggle').addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            if (document.body.classList.contains('dark-mode')) {
+                darkModeIcon.textContent = '☀️';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                darkModeIcon.textContent = '🌙';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+
+        document.getElementById('reloadButton').addEventListener('click', function () {
+            document.getElementById('myIframe').src = document.getElementById('myIframe').src;
+        });
+
+        document.getElementById('backButton').addEventListener('click', function () {
+            if (history.length > 1) {
+                history.back();
+            }
+        });
+
+        document.getElementById('forwardButton').addEventListener('click', function () {
+            if (history.length > 1) {
+                history.forward();
+            }
+        });
+        window.addEventListener('popstate', function (event) {
+            if (event.state && event.state.url) {
+                document.getElementById('myIframe').src = event.state.url;
+            }
+        });
+
+    </script>
+    <script src="/main.js"></script>
+</body> 
 </html>
