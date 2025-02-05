@@ -1,5 +1,7 @@
+
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,13 +27,17 @@
     }
   </style>
 </head>
-<body>
-  <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without any blocking. Some websites do not allow their site into an iframe (which is the box where the website is in) and you will need to enter the https://.</p>  
 
-  <input type="text" id="linkInput" placeholder="Enter a link">  
+<body>
+  <p style="font-size: 14px; font-family: sans-serif;">Enter a site you would like to visit without any blocking.
+ Some
+    websites do not allow their site into an iframe (which is the box where the website is in) and you will need to
+    enter the https://.</p>
+
+  <input type="text" id="linkInput" placeholder="Enter a link">
   <button id="loadButton">Load Link</button>
-  <button id="reloadButton">&#x21bb;</button> 
-  <select id="linkDropdown"> 
+  <button id="reloadButton">&#x21bb;</button>
+  <select id="linkDropdown">
     <option value="">-- Select a site --</option>
     <option value="https://sz-games.github.io/">Games</option>
   </select>
@@ -48,23 +54,27 @@
       if (link) {
         iframe.src = link;
       }
-    }    
+    }
 
     // Function to get the URL from the current page's URL
     function getUrlFromLocation() {
       const currentUrl = window.location.href;
-      const parts = currentUrl.split('/');
-      
-      //Check to make sure there is a url to go to
-      if(parts.length > 3){
-        return parts.slice(3).join('/');
+      const urlStartIndex = currentUrl.indexOf('/', currentUrl.indexOf('//') + 2); // Find the first / after the protocol
+
+      if (urlStartIndex !== -1) {
+        const potentialUrl = currentUrl.substring(urlStartIndex + 1);
+        if (potentialUrl.startsWith('http')) {
+          return potentialUrl;
+        } else {
+          return "";
+        }
       } else {
         return "";
       }
     }
 
     // Add event listener to handle 'Enter' key press in the input field
-    document.getElementById('linkInput').addEventListener('keypress', function(event) {
+    document.getElementById('linkInput').addEventListener('keypress', function (event) {
       if (event.key === 'Enter') {
         event.preventDefault(); // Prevent the default action (form submission)
         document.getElementById('loadButton').click(); // Simulate a click on the load button
@@ -72,11 +82,12 @@
     });
 
 
-    document.getElementById('loadButton').addEventListener('click', function() {
+    document.getElementById('loadButton').addEventListener('click', function
+ () {
       loadIframe(document.getElementById('linkInput').value);
     });
-    
-    document.getElementById('linkDropdown').addEventListener('change', function() {
+
+    document.getElementById('linkDropdown').addEventListener('change', function () {
       loadIframe(this.value);
     });
 
@@ -86,7 +97,7 @@
       document.getElementById('darkModeIcon').textContent = '☀️';
     }
 
-    document.getElementById('darkModeToggle').addEventListener('click', function() {
+    document.getElementById('darkModeToggle').addEventListener('click', function () {
       document.body.classList.toggle('dark-mode');
 
       const darkModeIcon = document.getElementById('darkModeIcon');
@@ -97,13 +108,13 @@
         darkModeIcon.textContent = '🌙';
         localStorage.setItem('darkMode', 'disabled');
       }
-      
+
       // You can add logic here to store the user's preference
       // using localStorage if you want the theme to persist
       // across page reloads.
     });
 
-    document.getElementById('reloadButton').addEventListener('click', function() {
+    document.getElementById('reloadButton').addEventListener('click', function () {
       document.getElementById('myIframe').src = document.getElementById('myIframe').src;
     });
 
@@ -113,6 +124,7 @@
       loadIframe(initialUrl);
     }
 
-  </script>  
+  </script>
 </body>
+
 </html>
