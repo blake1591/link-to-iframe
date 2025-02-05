@@ -70,6 +70,7 @@
     <select id="linkDropdown">
         <option value="">-- Select a site --</option>
         <option value="https://sz-games.github.io/">Games</option>
+        <option value="https://example.com">Example</option>
         
     </select>
     <button id="darkModeToggle" style="position: fixed; top: 10px; right: 10px;">
@@ -126,44 +127,69 @@
             positionSuggestionBox();
         });
 
-        // Event listener to hide the suggestion box when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!suggestionBox.contains(event.target) && event.target !== linkInput) {
-                suggestionBox.style.display = 'none';
-            }
-        });
-
-
-        // Handle selecting suggestions with arrow keys
-        linkInput.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                // Add logic to navigate through the suggestion list
-                event.preventDefault(); // Prevent default scrolling
-            } else if (event.key === 'Enter' && suggestionBox.style.display === 'block') {
-                event.preventDefault(); // Prevent default form submission
-            }
-        });
-        const linkInput = document.getElementById('linkInput');
-        // Add event listener to handle 'Enter' key press in the input field
-        linkInput.addEventListener('keypress', function (event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default action (form submission)
-
-
         document.getElementById('loadButton').addEventListener('click', function () {
             loadIframe(document.getElementById('linkInput').value);
         });
-        document.getElementById('linkDropdown').addEventListener('change', function () {
-            loadIframe(this.value);
+        // Event listener to hide the suggestion box when clicking outside
+        document.getElementById('reloadButton').addEventListener('click', function () {
+            document.getElementById('myIframe').src = document.getElementById('myIframe').src;
         });
-        if (localStorage.getItem('darkMode') === 'enabled') {
+
+        document.getElementById('backButton').addEventListener('click', function () {
+            history.back();
+        });
+
+        document.getElementById('forwardButton').addEventListener('click', function () {
+            history.forward();
+        });        
+        
+         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
             document.getElementById('darkModeIcon').textContent = '☀️';
         }
 
-        document.getElementById('darkModeToggle').addEventListener('click', function () {
-            document.body.classList.toggle('dark-mode');
+        document.getElementById('linkDropdown').addEventListener('change', function () {
+            loadIframe(this.value);
+        });
+        
+          function loadIframe(url) {
+        if (url) {
+            iframe.src = url;
+            history.pushState({ url: url }, '', url);
+        }
+    }
 
+    
+         // Handle selecting suggestions with arrow keys
+     
+        window.addEventListener('popstate', function (event) {
+            if (event.state && event.state.url) {
+                document.getElementById('myIframe').src = event.state.url;
+            }
+        });
+
+        
+        
+         document.getElementById('loadButton').addEventListener('click', function () {
+
+         loadIframe(linkInput.value);
+        });
+           
+    </script>
+        <script>
+         linkInput.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault(); 
+            } else if (event.key === 'Enter' && suggestionBox.style.display === 'block') {
+                suggestionBox.style.display = 'none';            }
+        });
+         document.addEventListener('click', (event) => {
+            if (!suggestionBox.contains(event.target) && event.target !== linkInput) {
+                suggestionBox.style.display = 'none';
+            }
+        });
+            document.getElementById('darkModeToggle').addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
             const darkModeIcon = document.getElementById('darkModeIcon');
             if (document.body.classList.contains('dark-mode')) {
                 darkModeIcon.textContent = '☀️';
@@ -171,31 +197,8 @@
             } else {
                 darkModeIcon.textContent = '🌙';
                 localStorage.setItem('darkMode', 'disabled');
-            }
-        });
-
-        document.getElementById('reloadButton').addEventListener('click', function () {
-            document.getElementById('myIframe').src = document.getElementById('myIframe').src;
-        });
-
-        document.getElementById('backButton').addEventListener('click', function () {
-            if (history.length > 1) {
-                history.back();
-            }
-        });
-
-        document.getElementById('forwardButton').addEventListener('click', function () {
-            if (history.length > 1) {
-                history.forward();
-            }
-        });
-        window.addEventListener('popstate', function (event) {
-            if (event.state && event.state.url) {
-                document.getElementById('myIframe').src = event.state.url;
-            }
-        });
-
-    </script>
+            }});
+        </script>
     <script src="/main.js"></script>
 </body> 
 </html>
