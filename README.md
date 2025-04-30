@@ -1,7 +1,9 @@
-# link-to-iframe
+# link-to-iframe archive
+This is the archived version of linktoiframe. A new version of linktoiframe can be found on the main.
+
 A simple HTML page where you can input a link and it will fill an iframe. Other features include light and dark modes, navigation buttons, autocomplete links (beta), and a drop-down menu of recommended sites.
 # Live version
-You can view a live version of this code at https://linktoiframe2.netlify.app/ .
+You can view a live version of this code at https://linktoiframe2.netlify.app/ . (a specific archive version is coming soon)
 # Other features
 ![Screenshot 2025-02-05 11 21 32 AM](https://github.com/user-attachments/assets/711b87ba-0153-4a77-89e3-9f8458a8c8ea)
 ## Light and dark mode
