@@ -1,29 +1,82 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 
 interface IframeViewerProps {
   url: string | null;
 }
 
+interface ErrorState {
+  message: string;
+  code?: string;
+  retry?: boolean;
+}
+
 const IframeViewer: React.FC<IframeViewerProps> = ({ url }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorState | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const retryCount = useRef<number>(0);
 
   useEffect(() => {
     if (!url) return;
 
     setIsLoading(true);
     setError(null);
+    retryCount.current = 0;
   }, [url]);
+
+  const getErrorMessage = (error: any): ErrorState => {
+    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+      return {
+        message: 'Unable to connect to the website. Please check your internet connection and try again.',
+        code: 'NETWORK_ERROR',
+        retry: true
+      };
+    }
+
+    if (error.name === 'SecurityError') {
+      return {
+        message: 'This website cannot be displayed due to security restrictions.',
+        code: 'SECURITY_ERROR'
+      };
+    }
+
+    if (error.name === 'AbortError') {
+      return {
+        message: 'The request was cancelled. Please try again.',
+        code: 'TIMEOUT_ERROR',
+        retry: true
+      };
+    }
+
+    return {
+      message: 'An unexpected error occurred while loading the page. Please try again.',
+      code: 'UNKNOWN_ERROR',
+      retry: true
+    };
+  };
 
   const handleLoad = () => {
     setIsLoading(false);
+    retryCount.current = 0;
   };
 
-  const handleError = () => {
+  const handleError = (event: Event | string) => {
     setIsLoading(false);
-    setError('Failed to load the page. Please check the URL and try again.');
+    const errorState = getErrorMessage(event);
+    setError(errorState);
+  };
+
+  const handleRetry = () => {
+    if (!url || retryCount.current >= 3) return;
+    
+    retryCount.current += 1;
+    setIsLoading(true);
+    setError(null);
+    
+    if (iframeRef.current) {
+      iframeRef.current.src = url;
+    }
   };
 
   if (!url) {
@@ -56,13 +109,24 @@ const IframeViewer: React.FC<IframeViewerProps> = ({ url }) => {
               <AlertCircle className="text-red-500 dark:text-red-400 mr-2" size={24} />
               <h3 className="text-lg font-semibold text-red-700 dark:text-red-300">Error</h3>
             </div>
-            <p className="text-red-600 dark:text-red-300 mb-4">{error}</p>
-            <button 
-              onClick={() => setError(null)}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors duration-300"
-            >
-              Dismiss
-            </button>
+            <p className="text-red-600 dark:text-red-300 mb-4">{error.message}</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setError(null)}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition-colors duration-300"
+              >
+                Dismiss
+              </button>
+              {error.retry && retryCount.current < 3 && (
+                <button 
+                  onClick={handleRetry}
+                  className="px-4 py-2 flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors duration-300"
+                >
+                  <RefreshCw size={16} />
+                  Retry
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -74,7 +138,7 @@ const IframeViewer: React.FC<IframeViewerProps> = ({ url }) => {
         className="w-full h-full border-0 transition-opacity duration-500"
         style={{ opacity: isLoading ? 0 : 1 }}
         onLoad={handleLoad}
-        onError={handleError}
+        onError={(e) => handleError(e)}
         title="Web Content Viewer"
       />
     </div>
